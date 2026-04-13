@@ -1,5 +1,7 @@
 # Ecommerce API (Take-Home)
 
+**Author:** Vinay Lakhani  
+
 ## 1. Project Overview
 
 Minimal REST backend for cart management, checkout, single-use discount codes, and admin configuration and stats. Each user has one in-memory cart; successful checkouts create orders and may generate a new coupon when the configured “every *n*th order” rule is satisfied.
