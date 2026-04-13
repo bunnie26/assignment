@@ -1,68 +1,45 @@
-# Assignment
+# Ecommerce API (Take-Home)
 
-You are designing an ecommerce store. Clients can add items to their cart and checkout to successfully place an order.  The store has a discount system that rewards customers.
+## 1. Project Overview
 
-We would like you to design and implement APIs for adding items to cart and checkout functionality. The checkout API would validate if the discount code is valid before giving the discount. 
+Minimal REST backend for cart management, checkout, single-use discount codes, and admin configuration and stats. Each user has one in-memory cart; successful checkouts create orders and may generate a new coupon when the configured “every *n*th order” rule is satisfied.
 
-Discount System works in the following ways - Every Every *n*th order gets a coupon code for x% discount. Discount codes can be applied at checkout. 
+## 2. Tech Stack
 
-The store also has two admin API's:
-1. Generate a discount code if the condition above is satisfied.
-2. Lists count of items purchased, revenue, discount codes and total discounts given. 
+- **Node.js**
+- **TypeScript**
+- **Express**
+- **Jest** (unit tests)
 
-You can build this with a technology stack that you are comfortable with. You would push the code to your github repo and share the link once its complete. We would like to see your commits that show progression and thought process as to how you are completing the exercise. 
+## 3. Setup Instructions
 
-## What We're Looking For
-
-We want to see **how you think**, not just that you can produce working code. You are encouraged to use AI tools to help you code faster, but you must demonstrate understanding of your choices.
-
-### Required Deliverables
-
-#### 1. Working Code
-- Functional APIs (backend required, frontend is a plus)
-- Code quality
-- In-memory store is fine (no database needed)
-- Unit tests for core business logic
-- Code comments, readme docs
-
-#### 2. DECISIONS.md (Required)
-Create a `DECISIONS.md` file documenting **at least 5 design decisions** you made. For each decision:
-
-```markdown
-## Decision: [Title]
-
-**Context:** What problem were you solving?
-
-**Options Considered:**
-- Option A: [description]
-- Option B: [description]
-
-**Choice:** [What you chose]
-
-**Why:** [Your reasoning - trade-offs, constraints, future considerations]
+```bash
+npm install
+npm run dev
 ```
-## Submission
 
-1. Push to your GitHub repo
-2. Ensure repo contains:
-   - Source code
-   - `README.md` with setup instructions
-   - `DECISIONS.md` with your design decisions
-   - Tests
-3. Share the repo link
+## 4. Running Tests
 
+```bash
+npm test
+```
 
-## FAQ:
-**Q: Can I use AI tools like GitHub Copilot or ChatGPT?**  
-A: Yes! But you must understand and be able to explain every line of code. We will ask about your implementation in the follow-up interview.
+## 5. API Documentation
 
-**Q: Do I need a database?**  
-A: No, in-memory storage is fine.
+Endpoint details, request/response examples, a suggested test flow, and **curl** snippets are in **[API_DOCS.md](./API_DOCS.md)**.
 
-**Q: Frontend required?**  
-A: Backend is required. Frontend is a plus but not required. If no frontend, provide Postman collection or similar.
+## 6. Implementation Details
 
-**Q: What tech stack should I use?**  
-A: Whatever you're most comfortable with. We primarily work with TypeScript/Node.js, but use what lets you demonstrate your skills best.
+- **In-memory storage:** Carts, orders, discount codes, and discount configuration live in a single in-process store (`src/store/memory.store.ts`). Nothing is persisted to disk or a database.
+- **Discount system:** Admins set `nthOrder` and `discountPercent` via `POST /admin/config`. After each successful checkout, if the total number of completed orders is a multiple of `nthOrder`, a new unused coupon is created and returned in the checkout response. Coupons are validated at checkout, apply as a percentage of subtotal, and are single-use.
 
-All the best!
+## 7. Notes
+
+- **Data resets on restart** — all state is lost when the process exits.
+- **No authentication** — user identity is whatever `userId` the client sends; admin routes are not protected.
+
+## 8. Future Improvements
+
+- Add database persistence (PostgreSQL/Redis)
+- Add authentication & authorization
+- Add integration tests (supertest)
